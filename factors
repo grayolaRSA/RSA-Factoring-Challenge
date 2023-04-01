@@ -34,7 +34,11 @@ def main():
         for line in f:
             n = int(line.strip())
 
-            factors = get_factor(n)
+            if n < 0:
+                print(f"{n} must be a positive integer")
+                continue
+            else:
+                factors = get_factor(n)
 
             if factors:
                 print("{:d}={:d}*{:d}".format(n, factors[0], factors[1]))
