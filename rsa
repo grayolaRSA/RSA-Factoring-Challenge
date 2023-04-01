@@ -1,0 +1,67 @@
+#!/usr/bin/python3
+"""module obtains 2 prime factors of a number"""
+
+
+import math
+import sys
+
+
+def get_factor(n):
+    """function gets two factors by dividing
+    first by lowest prime number
+    then by result of using prime number as divisor"""
+
+    if n < 2:
+        return None
+    if n == 2:
+        return (1, 2)
+    for i in range(2, int(math.sqrt(n)) + 1):
+        if n % i == 0:
+            return (i, n // i)
+
+
+def isprime(n):
+    """
+    Returns True if n is prime, False otherwise.
+    """
+
+    if n <= 1:
+        return False
+    elif n == 2:
+        return True
+    elif n % 2 == 0:
+        return False
+    else:
+        for i in range(3, int(math.sqrt(n)) + 1, 2):
+            if n % i == 0:
+                return False
+        return True
+
+
+def main():
+    """function to open test file to run get_factor"""
+
+    if len(sys.argv) < 2:
+        print("Usage: python <file_name> <test_file>")
+        return
+
+    file_name = sys.argv[1]
+
+    with open(file_name, 'r') as f:
+        for line in f:
+            n = int(line.strip())
+
+            if n < 0:
+                print(f"{n} must be a positive integer")
+                break
+
+            factors = get_factor(n)
+
+            if isprime(factors[0]) and isprime(factors[1]):
+                print("{:d}={:d}*{:d}".format(n, factors[0], factors[1]))
+            else:
+                print(f"{n} is not the product of two primes")
+
+
+if __name__ == "__main__":
+    main()
