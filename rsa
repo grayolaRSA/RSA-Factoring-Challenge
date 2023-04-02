@@ -4,43 +4,45 @@
 
 import math
 import sys
+from collections import Counter
 
 
-def get_factor(n):
-    """function gets two factors by dividing
-    first by lowest prime number
-    then by result of using prime number as divisor"""
+def prime_factors(n):
+    """Return a list of prime factors of n"""
+    factors = []
+    d = 2
+    while d*d <= n:
+        count = 0
+        while (n % d) == 0:
+            count += 1
+            n //= d
+        if count > 0:
+            factors.append((d, count))
+        d += 1
+    if n > 1:
+        factors.append((n, 1))
+    return factors
 
-    if n < 2:
-        return None
-    if n == 2:
-        return (1, 2)
-    for i in range(2, int(math.sqrt(n)) + 1):
-        if n % i == 0:
-            return (i, n // i)
 
-
-def isprime(n):
-    """
-    Returns True if n is prime, False otherwise.
-    """
-
-    if n <= 1:
-        return False
-    elif n == 2:
-        return True
-    elif n % 2 == 0:
-        return False
-    else:
-        for i in range(3, int(math.sqrt(n)) + 1, 2):
-            if n % i == 0:
-                return False
-        return True
+def prime_factor_pairs(n):
+    """Return a list of all prime factor pairs of n."""
+    factors = prime_factors(n)
+    pairs = []
+    for i in range(len(factors)):
+        for j in range(i, len(factors)):
+            p, m = factors[i]
+            q, n = factors[j]
+            if p == q and m == n == 1:
+                continue
+            if p*q == n:
+                pairs.append((p, q))
+            if len(pairs) == 0 and len(factors) == 2:
+                pairs.append((factors[0][0], factors[1][0]))
+            return pairs
 
 
 def main():
     """function to open test file to run get_factor"""
-
     if len(sys.argv) < 2:
         print("Usage: python <file_name> <test_file>")
         return
@@ -55,10 +57,9 @@ def main():
                 print(f"{n} must be a positive integer")
                 break
 
-            factors = get_factor(n)
-
-            if isprime(factors[0]) and isprime(factors[1]):
-                print("{:d}={:d}*{:d}".format(n, factors[0], factors[1]))
+            pairs = prime_factor_pairs(n)
+            if pairs:
+                print("{:d}={:d}*{:d}".format(n, pairs[0][0], pairs[0][1]))
             else:
                 print(f"{n} is not the product of two primes")
 
